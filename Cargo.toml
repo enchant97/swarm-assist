@@ -1,0 +1,13 @@
+[package]
+name = "swarm-assist"
+version = "0.1.0"
+license = "Apache-2.0"
+description = "A unified command line interface for managing a Docker Swarm cluster."
+readme = "README.md"
+keywords = ["cli", "automation"]
+categories = ["command-line-utilities"]
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.4.10", features = ["derive"] }
+exitcode = "1.1.2"
