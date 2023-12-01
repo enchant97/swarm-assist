@@ -7,6 +7,9 @@ pub enum Command {
         #[arg(short, long)]
         prune: bool,
     },
+    RmStack {
+        stacks: Vec<String>,
+    },
     Recreate {
         services: Vec<String>,
     },
@@ -22,6 +25,8 @@ pub enum Command {
         #[arg(short, long)]
         volumes: bool,
     },
+    Info,
+    Stats,
 }
 
 #[derive(Parser, Debug)]
