@@ -7,7 +7,7 @@ pub enum Command {
         #[arg(short, long)]
         prune: bool,
     },
-    Update {
+    Recreate {
         services: Vec<String>,
     },
     Rm {

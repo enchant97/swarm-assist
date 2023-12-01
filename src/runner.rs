@@ -5,6 +5,7 @@ use exitcode::ExitCode;
 /// Runs the process interactively allowing user to see stdout and use stdin
 pub fn run_interactive(program: &str, args: Vec<&str>, cwd: Option<&str>) -> ExitCode {
     let mut cmd = Command::new(program);
+    cmd.args(args);
     if let Some(cwd) = cwd {
         cmd.current_dir(cwd);
     }
