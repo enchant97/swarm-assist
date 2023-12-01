@@ -16,7 +16,7 @@ use glob::glob;
 use helpers::home_path;
 use runner::run_interactive;
 
-fn command_deploy(stack_conf_root: &Path, stacks: &Vec<String>, prune: bool) {
+fn command_deploy(stack_conf_root: &Path, stacks: &[String], prune: bool) {
     if stacks.is_empty() {
         for entry in glob(stack_conf_root.join("*.yml").to_str().unwrap())
             .expect("glob pattern processing failed")
@@ -52,7 +52,7 @@ fn command_deploy(stack_conf_root: &Path, stacks: &Vec<String>, prune: bool) {
 
 fn command_remove_stack(stacks: &[String]) {
     let mut command_args = vec!["stack", "rm"];
-    command_args.extend(stacks.into_iter().map(|v| v.as_str()));
+    command_args.extend(stacks.iter().map(|v| v.as_str()));
     let exit_code = run_interactive("docker", command_args, None);
     if exitcode::is_error(exit_code) {
         exit(exit_code);
@@ -75,7 +75,7 @@ fn command_recreate(services: &[String]) {
 
 fn command_remove_service(services: &[String]) {
     let mut command_args = vec!["service", "rm"];
-    command_args.extend(services.into_iter().map(|v| v.as_str()));
+    command_args.extend(services.iter().map(|v| v.as_str()));
     let exit_code = run_interactive("docker", command_args, None);
     if exitcode::is_error(exit_code) {
         exit(exit_code);
