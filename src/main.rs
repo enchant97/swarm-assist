@@ -32,7 +32,7 @@ fn command_deploy(stack_conf_root: &Path, stacks: &[String], prune: bool) {
     } else {
         for exit_code in stacks.iter().map(|stack_name| {
             let compose_file = stack_conf_root.join(format!("{}.yml", stack_name));
-            let mut command_args = vec!["stack", "deploy"];
+            let mut command_args = vec!["stack", "deploy", "--detach", "false"];
             if prune {
                 command_args.push("--prune");
             }
