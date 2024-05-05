@@ -17,7 +17,11 @@ use helpers::home_path;
 use runner::run_interactive;
 
 fn command_deploy(stack_conf_root: &Path, stacks: &[String], prune: bool) {
-    if stacks.is_empty() {
+    if !stack_conf_root.is_dir() {
+        println!("configured stack root {:?} does not exist", stack_conf_root);
+        println!("override the default with the 'STACK_CONF_ROOT' environment variable");
+        exit(exitcode::CONFIG);
+    } else if stacks.is_empty() {
         for entry in glob(stack_conf_root.join("*.yml").to_str().unwrap())
             .expect("glob pattern processing failed")
         {
@@ -31,6 +35,7 @@ fn command_deploy(stack_conf_root: &Path, stacks: &[String], prune: bool) {
         }
     } else {
         for exit_code in stacks.iter().map(|stack_name| {
+            let stack_name = stack_name.strip_suffix(".yml").unwrap_or(stack_name);
             let compose_file = stack_conf_root.join(format!("{}.yml", stack_name));
             let mut command_args = vec!["stack", "deploy", "--detach", "false"];
             if prune {
@@ -155,10 +160,6 @@ fn main() {
                 .expect("failed to get home directory")
                 .join("stack.yml.d")
         });
-    if !stack_conf_root.is_dir() {
-        println!("configured stack root {:?} does not exist", stack_conf_root);
-        return;
-    }
     let args = Args::parse();
     match args.command {
         args::Command::Deploy { stacks, prune } => command_deploy(&stack_conf_root, &stacks, prune),
