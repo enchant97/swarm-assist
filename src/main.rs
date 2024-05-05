@@ -50,6 +50,22 @@ fn command_deploy(stack_conf_root: &Path, stacks: &[String], prune: bool) {
     }
 }
 
+fn command_list_stacks() {
+    let command_args = vec!["stack", "ls"];
+    let exit_code = run_interactive("docker", command_args, None);
+    if exitcode::is_error(exit_code) {
+        exit(exit_code);
+    }
+}
+
+fn command_stack_tasks(stack: &str) {
+    let command_args = vec!["stack", "ps", stack];
+    let exit_code = run_interactive("docker", command_args, None);
+    if exitcode::is_error(exit_code) {
+        exit(exit_code);
+    }
+}
+
 fn command_remove_stack(stacks: &[String]) {
     let mut command_args = vec!["stack", "rm"];
     command_args.extend(stacks.iter().map(|v| v.as_str()));
@@ -146,6 +162,8 @@ fn main() {
     let args = Args::parse();
     match args.command {
         args::Command::Deploy { stacks, prune } => command_deploy(&stack_conf_root, &stacks, prune),
+        args::Command::LsStacks => command_list_stacks(),
+        args::Command::PsStack { stack } => command_stack_tasks(&stack),
         args::Command::RmStack { stacks } => command_remove_stack(&stacks),
         args::Command::Recreate { services } => command_recreate(&services),
         args::Command::Rm { services } => command_remove_service(&services),

@@ -7,6 +7,10 @@ pub enum Command {
         #[arg(short, long)]
         prune: bool,
     },
+    LsStacks,
+    PsStack {
+        stack: String,
+    },
     RmStack {
         stacks: Vec<String>,
     },
