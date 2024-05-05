@@ -21,7 +21,7 @@ jobs:
       - name: Build Release
         run: cargo build --release --target ${{ matrix.target }}
       - name: Create release archive
-        run: tar -cz -f /tmp/swarm-assist-${{ matrix.target }}.tar.gz ./LICENSE.txt ./target/${{ matrix.target }}/release/swarm-assist
+        run: tar -cz -f /tmp/swarm-assist-${{ matrix.target }}.tar.gz ./LICENSE.txt -C ./target/${{ matrix.target }}/release ./swarm-assist
       - name: Upload Asset To Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
