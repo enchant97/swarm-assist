@@ -1,0 +1,29 @@
+name: Publish App
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-musl }
+          - { os: ubuntu-latest, target: aarch64-unknown-linux-musl }
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup target add ${{ matrix.target }}
+      - name: Build Release
+        run: cargo build --release --target ${{ matrix.target }}
+      - name: Create release archive
+        run: tar -cz -f /tmp/swarm-assist-${{ matrix.target }}.tar.gz ./LICENSE.txt ./target/${{ matrix.target }}/release/swarm-assist
+      - name: Upload Asset To Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: /tmp/swarm-assist-${{ matrix.target }}.tar.gz
