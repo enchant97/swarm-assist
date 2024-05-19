@@ -37,11 +37,17 @@ fn command_deploy(stack_conf_root: &Path, stacks: &[String], prune: bool) {
         for exit_code in stacks.iter().map(|stack_name| {
             let stack_name = stack_name.strip_suffix(".yml").unwrap_or(stack_name);
             let compose_file = stack_conf_root.join(format!("{}.yml", stack_name));
-            let mut command_args = vec!["stack", "deploy", "--detach", "false"];
+            let mut command_args = vec![
+                "stack",
+                "deploy",
+                "--detach=false",
+                "-c",
+                compose_file.to_str().unwrap(),
+            ];
             if prune {
                 command_args.push("--prune");
             }
-            command_args.extend(vec!["-c", compose_file.to_str().unwrap(), stack_name]);
+            command_args.push(stack_name);
             run_interactive(
                 "docker",
                 command_args,
